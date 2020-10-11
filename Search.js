@@ -4,44 +4,39 @@ import moment from 'moment';
 import { Card, Button } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
 import filterForUniqueItems from './filterForUniqueItems.js';
-import { onChange } from 'react-native-reanimated';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-const key = "0e639301ff494ab491315d63255a7d05";
+const key = "84af92544a4249b0a1b41e3c823177c9";
 
 export default function News(){
     const [loading, setLoading] = useState(false);
     const [query, setQuery] = useState([]);
     const [articles, setArticles] = useState([]);
-    const [pageNumber, setPageNumber] = useState(1);
     const [hasErrored, setHasApiError] = useState(false);
     const [lastPageReached, setLastPageReached] = useState(false);
     
     const getNews = async () => {
+        setArticles([]);
         setLoading(true);
         try{
-            const response = await fetch(`https://newsapi.org/v2/everything?q=${query}&apiKey=${key}`);
+            const response = await fetch(`https://newsapi.org/v2/everything?qInTitle=${query}&apiKey=${key}`);
             const jsonData = await response.json();
             const hasMoreArticles = jsonData.articles.length > 0;
             if (hasMoreArticles){
-                const newArticleList = filterForUniqueItems(
-                articles.concat(jsonData.articles)
-                )
-                setArticles(newArticleList);
-                setPageNumber(pageNumber+1);  
+                setArticles(jsonData.articles);
             }
             else{
                 setLastPageReached(false);
             }
         }
-      catch(error){
-        setHasApiError(true);
+        catch(error){
+            setHasApiError(true);
       };
   
       setLoading(false);
     };
   
-    useEffect(() => {getNews()},[articles]);
+    useEffect(() => {getNews()},[]);
   
     if (loading){
       return(
@@ -89,17 +84,12 @@ export default function News(){
         }
       })
     }
-
-    // const onChangeText = text{
-    //     setState
-    // }
-  
     // if (hasErrored){
-    //   return(
-    //     <View style={styles.container}>
-    //       <Text>Error =(</Text>
-    //     </View>
-    //   )
+    //     return(
+    //       <View style={styles.container}>
+    //         <Text>Error =(</Text>
+    //       </View>
+    //     )
     // }
     return (
       <View style={styles.container}>

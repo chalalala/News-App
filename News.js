@@ -5,7 +5,7 @@ import { Card, Button } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
 import filterForUniqueItems from './filterForUniqueItems.js';
 
-const key = "0e639301ff494ab491315d63255a7d05";
+const key = "84af92544a4249b0a1b41e3c823177c9";
 
 export default function News(){
     const [loading, setLoading] = useState(true);
@@ -53,7 +53,7 @@ export default function News(){
       return(
         <Card>
           <View style={styles.row}>
-            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.header}>{item.title}</Text>
           </View>
           <Image 
             source={{uri: item.urlToImage}}
@@ -130,11 +130,6 @@ const styles = StyleSheet.create({
       backgroundColor: '#fff',
       justifyContent: 'center'
     },
-    header: {
-      height: 30,
-      width: '100%',
-      backgroundColor: 'pink'
-    },
     row: {
       flexDirection: 'row'
     },
@@ -143,6 +138,12 @@ const styles = StyleSheet.create({
       color: 'black',
       fontWeight: 'bold',
       marginTop: 20,
+    },
+    header: {
+      fontSize: 20,
+      color: 'black',
+      fontWeight: 'bold',
+      textAlign: 'center'
     },
     label: {
       fontSize: 16,

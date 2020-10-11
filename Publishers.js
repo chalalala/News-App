@@ -5,7 +5,7 @@ import { Card, Button } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
 import filterForUniqueItems from './filterForUniqueItems.js';
 
-const key = "0e639301ff494ab491315d63255a7d05";
+const key = "84af92544a4249b0a1b41e3c823177c9";
 
 export default function Publishers(){
     const [loading, setLoading] = useState(true);
@@ -18,7 +18,6 @@ export default function Publishers(){
       try{
           const response = await fetch(`https://newsapi.org/v2/sources?apiKey=${key}`);
           const jsonData = await response.json();
-          // setPublishers(publishers.concat(jsonData.sources));
           const hasMorePublishers = jsonData.sources.length > 0;
           if (hasMorePublishers){
             const newPublishersList = filterForUniqueItems(
@@ -126,7 +125,7 @@ export default function Publishers(){
           onEndReached={getPublishers}
           onEndReachedThreshold={1}
           renderItem={renderItem}
-          keyExtractor={item => item.title}
+          keyExtractor={item => item.id}
           ListFooterComponent={lastPageReached ?
             <Text>No more publishers</Text> : 
             <ActivityIndicator size="large" loading={loading} color="#0000ff"/>
