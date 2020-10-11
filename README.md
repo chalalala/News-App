@@ -17,3 +17,6 @@ A news app using **React Native** & **Expo**. Our app will help users find infor
 - User can see a list of individual publishers.  
 - User can see how many articles each publisher has made.  
 - User can search articles by title.  
+
+## Demo
+![image](https://media2.giphy.com/media/38q2cbYeLIlBV1p51e/giphy.gif)
