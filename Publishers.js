@@ -42,7 +42,7 @@ export default function Publishers(){
       getPublishers();
     },[publishers]);
 
-        const [articles, setArticles] = useState([]);
+    const [articles, setArticles] = useState([]);
 
     const getNews = async () => {
       try{
@@ -86,11 +86,11 @@ export default function Publishers(){
       return(
         <Card>
           <Text style={styles.title}>{item.name}</Text>
-          {/* <Text style={styles.info}>{item.description}</Text>
+          <Text style={styles.info}>{item.description}</Text>
           <View style={styles.row}>
             <Text style={styles.label}>Categories: </Text>
             <Text style={styles.info}>{toCapitalize(item.category)}</Text>
-          </View> */}
+          </View>
           <View style={styles.row}>
             <Text style={styles.label}>Number of articles: </Text>
             <Text style={styles.info}>{getNumberOfArticles(item)}</Text>
@@ -120,6 +120,7 @@ export default function Publishers(){
     }
     return (
       <View style={styles.container}>
+        <Text style={styles.title}>Publishers</Text>
         <FlatList
           data={publishers}
           onEndReached={getPublishers}
@@ -149,9 +150,10 @@ const styles = StyleSheet.create({
       justifyContent: 'center'
     },
     title: {
-      fontSize: 20,
+      fontSize: 24,
       color: 'black',
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      marginTop: 20,
     },
     row: {
       flexDirection: 'row'

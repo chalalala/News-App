@@ -1,24 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View, FlatList, Linking, TabBarIOS } from 'react-native';
-import moment from 'moment';
-import { Card, Button } from 'react-native-elements';
-import { Icon } from 'react-native-elements';
+import React from 'react';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FontAwesome } from '@expo/vector-icons'; 
+
 import News from './News.js';
 import Publishers from './Publishers.js';
+import Search from './Search.js';
 
 const Tab = createBottomTabNavigator();
-const key = "0e639301ff494ab491315d63255a7d05";
-
-function Search(){
-  return(
-    <View style={styles.container}>
-      <Text>Search</Text>
-    </View>
-  )
-}
 
 const iconsList = {
   News: "newspaper-o",

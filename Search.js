@@ -1,35 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View, FlatList, Linking, Image } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View, FlatList, Linking, Image, TextInput } from 'react-native';
 import moment from 'moment';
 import { Card, Button } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
 import filterForUniqueItems from './filterForUniqueItems.js';
+import { onChange } from 'react-native-reanimated';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const key = "0e639301ff494ab491315d63255a7d05";
 
 export default function News(){
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [query, setQuery] = useState([]);
     const [articles, setArticles] = useState([]);
     const [pageNumber, setPageNumber] = useState(1);
     const [hasErrored, setHasApiError] = useState(false);
     const [lastPageReached, setLastPageReached] = useState(false);
-  
+    
     const getNews = async () => {
-      try{
-          const response = await fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${key}`);
-          const jsonData = await response.json();
-          const hasMoreArticles = jsonData.articles.length > 0;
-          if (hasMoreArticles){
-            const newArticleList = filterForUniqueItems(
-              articles.concat(jsonData.articles)
-            )
-            setArticles(newArticleList);
-            setPageNumber(pageNumber+1);  
-          }
-          else{
-            setLastPageReached(false);
-          }
-      }
+        setLoading(true);
+        try{
+            const response = await fetch(`https://newsapi.org/v2/everything?q=${query}&apiKey=${key}`);
+            const jsonData = await response.json();
+            const hasMoreArticles = jsonData.articles.length > 0;
+            if (hasMoreArticles){
+                const newArticleList = filterForUniqueItems(
+                articles.concat(jsonData.articles)
+                )
+                setArticles(newArticleList);
+                setPageNumber(pageNumber+1);  
+            }
+            else{
+                setLastPageReached(false);
+            }
+        }
       catch(error){
         setHasApiError(true);
       };
@@ -37,9 +41,7 @@ export default function News(){
       setLoading(false);
     };
   
-    useEffect(() => {
-      getNews();
-    },[articles]);
+    useEffect(() => {getNews()},[articles]);
   
     if (loading){
       return(
@@ -87,21 +89,32 @@ export default function News(){
         }
       })
     }
+
+    // const onChangeText = text{
+    //     setState
+    // }
   
-    if (hasErrored){
-      return(
-        <View style={styles.container}>
-          <Text>Error =(</Text>
-        </View>
-      )
-    }
+    // if (hasErrored){
+    //   return(
+    //     <View style={styles.container}>
+    //       <Text>Error =(</Text>
+    //     </View>
+    //   )
+    // }
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Top headlines</Text>
         <View style={styles.row}>
-          <Text style={styles.label}>Articles Count: </Text>
-          <Text style={styles.info}>{articles.length}</Text>
+          <Text style={styles.title}>Search for articles</Text>
         </View>
+        <TextInput
+            onChangeText={text => setQuery(text.toLowerCase().split(" ").join("+"))}
+            style={styles.queryInput}
+            placeholder="Enter keywords"
+        />
+        <TouchableOpacity style={styles.searchButton} onClick={getNews}>
+            <Text style={styles.textButton}>Search</Text>
+        </TouchableOpacity>
+        <Text>Number of results: {articles.length}</Text>    
         <FlatList
           data={articles}
           onEndReached={getNews}
@@ -142,7 +155,7 @@ const styles = StyleSheet.create({
       fontSize: 24,
       color: 'black',
       fontWeight: 'bold',
-      marginTop: 20,
+      marginVertical: 20,
     },
     label: {
       fontSize: 16,
@@ -156,5 +169,25 @@ const styles = StyleSheet.create({
     image: {
       width:'100%',
       height:200,
+    },
+    queryInput: {
+        width:'80%',
+        padding: 10,
+        borderWidth: 1,
+        borderColor: 'gray',
+        color: 'black'
+    },
+    searchButton:{
+        backgroundColor: '#4066ed',
+        width:150,
+        height:50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: 10,
+        borderRadius: 50
+    },
+    textButton: {
+        color: 'white',
+        fontSize: 20,
     }
 });
