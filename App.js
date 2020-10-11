@@ -1,124 +1,50 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View, FlatList, Linking } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View, FlatList, Linking, TabBarIOS } from 'react-native';
 import moment from 'moment';
 import { Card, Button } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { FontAwesome } from '@expo/vector-icons'; 
+import News from './News.js';
+import Publishers from './Publishers.js';
 
-const filterForUniqueArticles = arr => {
-  const cleaned = [];
-  arr.forEach(itm => {
-    let unique = true;
-    cleaned.forEach(itm2 => {
-      const isEqual = JSON.stringify(itm) === JSON.stringify(itm2);
-      if (isEqual) unique = false; 
-    });
-    if (unique) cleaned.push(itm);
-  })
-  return cleaned;
+const Tab = createBottomTabNavigator();
+const key = "0e639301ff494ab491315d63255a7d05";
+
+function Search(){
+  return(
+    <View style={styles.container}>
+      <Text>Search</Text>
+    </View>
+  )
+}
+
+const iconsList = {
+  News: "newspaper-o",
+  Publishers: "building-o",
+  Search: "search"
 }
 
 export default function App() {
-  const [loading, setLoading] = useState(true);
-  const [articles, setArticles] = useState([]);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [hasErrored, setHasApiError] = useState(false);
-  const [lastPageReached, setLastPageReached] = useState(false);
-
-  const key = "0e639301ff494ab491315d63255a7d05";
-  const getNews = async () => {
-    try{
-        const response = await fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${key}`);
-        const jsonData = await response.json();
-
-        const hasMoreArticles = jsonData.articles.length > 0;
-        if (hasMoreArticles){
-          const newArticleList = filterForUniqueArticles(
-            articles.concat(jsonData.articles)
-          )
-          setArticles(newArticleList);
-          setPageNumber(pageNumber+1);  
-        }
-        else{
-          setLastPageReached(false);
-        }
-    }
-    catch(error){
-      setHasApiError(true);
-    };
-
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    getNews();
-  },[articles]);
-
-  if (loading){
-    return(
-      <View style={styles.container}>
-        <ActivityIndicator size="large" loading={loading} color="#0000ff"/>
-      </View>
-    )
-  }
-  
-  const renderArticleItem = ({item}) => {
-    return(
-      <Card title={item.title} image={{uri: item.urlToImage}}>
-        <View style={styles.row}>
-          <Text style={styles.label}>Source: </Text>
-          <Text style={styles.info}>{item.source.name}</Text>
-        </View>
-        <Text style={{marginBottom:10}}>{item.content}</Text>
-        <View style={styles.row}>
-          <Text style={styles.row}>
-            <Text style={styles.label}>Published: </Text>
-            <Text style={styles.info}>
-              {moment(item.publishedAt).format('LLL')}
-            </Text>
-          </Text>
-        </View>
-        <Button icon={<Icon/>} title="Read more" backgroundColor="#03A9F4" onPress={() => onPress(item.url)}/>
-      </Card>
-    );
-  }; 
-
-  const onPress = url => {
-    Linking.canOpenURL(url).then(supported => {
-      if (supported){
-        Linking.openURL(url);
-      }
-      else{
-        console.log(`Don't know how to open URL: ${url}`);
-      }
-    })
-  }
-
-  if (hasErrored){
-    return(
-      <View style={styles.container}>
-        <Text>Error =(</Text>
-      </View>
-    )
-  }
-  return (
-    <View style={styles.container}>
-      <View style={styles.row}>
-        <Text style={styles.label}>Articles Count: </Text>
-        <Text style={styles.info}>{articles.length}</Text>
-      </View>
-      <FlatList
-        data={articles}
-        onEndReached={getNews}
-        onEndReachedThreshold={1}
-        renderItem={renderArticleItem}
-        keyExtractor={item => item.title}
-        ListFooterComponent={lastPageReached ?
-          <Text>No more articles</Text> : 
-          <ActivityIndicator size="large" loading={loading}/>
-        }
-      />
-    </View>
-  );
+  return(
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({route}) => ({
+          tabBarIcon: ({focused}) => {
+            return <FontAwesome name={iconsList[route.name]} size={24} color={focused ? "blue" : "black"}/>;
+          }
+        })}
+        tabBarOptions={{
+          activeTintColor: "blue",
+          inactiveTintColor: "grey"
+        }}>
+        <Tab.Screen name="News" component={News}/>
+        <Tab.Screen name="Publishers" component={Publishers}/>
+        <Tab.Screen name="Search" component={Search}/>
+      </Tab.Navigator>
+    </NavigationContainer>
+  )
 }
 
 const styles = StyleSheet.create({
