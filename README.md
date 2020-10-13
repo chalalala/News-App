@@ -19,4 +19,4 @@ A news app using **React Native** & **Expo**. Our app will help users find infor
 - User can search articles by title.  
 
 ## Demo
-![image](https://media2.giphy.com/media/38q2cbYeLIlBV1p51e/giphy.gif)
+![image](https://media4.giphy.com/media/TrZfRTELo51KNpRR1a/giphy.gif)
